@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Peta Nanggroe Aceh</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    body, html { margin: 0; padding: 0; height: 100%; }
+    #map { width: 100%; height: 100vh; }
+    .info-panel {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: white;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.3);
+      max-width: 300px;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="map"></div>
+<div class="info-panel" id="info">
+  <strong>Info Lokasi:</strong><br/>
+  Klik marker di peta untuk melihat detail.
+</div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+  // Inisialisasi peta
+  var map = L.map('map').setView([4.6951, 96.7494], 8); // Tengah Aceh
+
+  // Peta dasar
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  // Contoh marker dummy (nanti bisa diganti database/info sesungguhnya)
+  var locations = [
+    {
+      name: "Banda Aceh",
+      description: "Ibukota Provinsi Aceh",
+      lat: 5.5483,
+      lng: 95.3238
+    },
+    {
+      name: "Sabang",
+      description: "Pulau terujung barat Indonesia",
+      lat: 5.8897,
+      lng: 95.3166
+    }
+  ];
+
+  // Tambahkan marker ke peta
+  locations.forEach(function(loc) {
+    var marker = L.marker([loc.lat, loc.lng]).addTo(map);
+    marker.bindPopup("<b>" + loc.name + "</b><br/>" + loc.description);
+    
+    marker.on('click', function() {
+      document.getElementById('info').innerHTML = 
+        "<strong>" + loc.name + "</strong><br/>" + loc.description;
+    });
+  });
+
+</script>
+
+</body>
+</html>
