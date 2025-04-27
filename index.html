@@ -66,7 +66,38 @@
         "<strong>" + loc.name + "</strong><br/>" + loc.description;
     });
   });
+// Fungsi untuk memusatkan peta ke lokasi pengguna
+function centerMapOnUserLocation() {
+  // Periksa apakah geolocation didukung oleh browser
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var lat = position.coords.latitude;
+      var lon = position.coords.longitude;
 
+      // Set view untuk memusatkan peta ke lokasi pengguna dengan zoom level 15
+      map.setView([lat, lon], 15);
+
+      // Menambahkan marker di lokasi pengguna
+      L.marker([lat, lon]).addTo(map)
+        .bindPopup("Lokasi Anda Sekarang")
+        .openPopup();
+    }, function() {
+      alert("Tidak dapat mendeteksi lokasi Anda.");
+    });
+  } else {
+    alert("Geolocation tidak didukung oleh browser ini.");
+  }
+}
+
+// Menambahkan tombol untuk mengaktifkan fitur geolocation
+var locateButton = L.control({position: 'topleft'});
+locateButton.onAdd = function(map) {
+  var button = L.DomUtil.create('button', 'locate-button');
+  button.innerHTML = 'Lokasi Saya';
+  button.onclick = centerMapOnUserLocation;
+  return button;
+};
+locateButton.addTo(map);
 </script>
 
 </body>
