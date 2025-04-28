@@ -101,7 +101,13 @@ locateButton.addTo(map);
 
   //
 
-  fetch('https://github.com/ketikurban/nanggroeaceh/blob/main/aceh_heritage_map.geojson')
+  fetch('https://raw.githubusercontent.com/ketikurban/nanggroeaceh/6c8f1468d6f18b2084aefca0247bf765119333ff/aceh_heritage_map.geojson')
+  .then(response => response.json())
+  .then(data => {
+    L.geoJSON(data).addTo(map);
+  })
+  .catch(error => console.error('Error loading GeoJSON:', error));
+
 
 </script>
 
