@@ -109,6 +109,64 @@ locateButton.addTo(map);
   .catch(error => console.error('Error loading GeoJSON:', error));
 
 
+  let geojsonData; // Data GeoJSON yang dimuat
+
+// Fungsi untuk memfilter berdasarkan kategori
+function filterKategori() {
+  // Cek checkbox yang dipilih
+  let selectedCategories = [];
+  
+  if (document.getElementById('cagarBudaya').checked) {
+    selectedCategories.push('Cagar Budaya');
+  }
+  if (document.getElementById('memoriTsunami').checked) {
+    selectedCategories.push('Memori Tsunami');
+  }
+  if (document.getElementById('atraksiUtama').checked) {
+    selectedCategories.push('Atraksi Utama');
+  }
+  if (document.getElementById('jelajahAlam').checked) {
+    selectedCategories.push('Jelajah Alam');
+  }
+  if (document.getElementById('jejakSejarah').checked) {
+    selectedCategories.push('Jejak Sejarah Lokal');
+  }
+
+  // Filter data GeoJSON berdasarkan kategori yang dipilih
+  let filteredData = geojsonData.features.filter(function(feature) {
+    // Jika tidak ada kategori yang dipilih, tampilkan semua
+    if (selectedCategories.length === 0) return true;
+
+    // Cek apakah kategori feature ada dalam kategori yang dipilih
+    return selectedCategories.includes(feature.properties.Jenis);
+  });
+
+  // Clear peta dan tampilkan data yang terfilter
+  map.eachLayer(function(layer) {
+    if (layer instanceof L.GeoJSON) {
+      map.removeLayer(layer); // Hapus semua marker lama
+    }
+  });
+
+  // Tambahkan marker yang terfilter
+  L.geoJSON(filteredData, {
+    onEachFeature: function (feature, layer) {
+      layer.bindPopup("<b>" + feature.properties.name + "</b><br>" +
+                      "Kategori: " + feature.properties.Jenis + "<br>" +
+                      "Deskripsi: " + feature.properties.Deskripsi);
+    }
+  }).addTo(map);
+}
+
+// Fetch GeoJSON
+fetch('https://raw.githubusercontent.com/ketikurban/nanggroeaceh/main/aceh_heritage_map.geojson')
+  .then(response => response.json())
+  .then(data => {
+    geojsonData = data; // Simpan data ke variabel
+    filterKategori(); // Tampilkan semua data awalnya
+  })
+  .catch(error => console.error('Error loading GeoJSON:', error));
+
 </script>
 
 </body>
